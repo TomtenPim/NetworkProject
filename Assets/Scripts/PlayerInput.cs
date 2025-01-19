@@ -107,6 +107,33 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Happy"",
+                    ""type"": ""Button"",
+                    ""id"": ""db52e988-ed99-44c3-9796-b74dd8788594"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Angry"",
+                    ""type"": ""Button"",
+                    ""id"": ""8127270a-add2-4979-ac63-648928e0636b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shocked"",
+                    ""type"": ""Button"",
+                    ""id"": ""a6256100-c232-4f4e-ab77-17b91407ceb1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -492,6 +519,39 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88f36c35-097d-4586-be53-ecfa8c8e1a45"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Happy"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""15f3fbb6-e728-416a-9d0f-4d8a24911cce"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Angry"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bef1f6eb-2b5b-46e6-ae53-7b5532c7f9b8"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Shocked"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1088,6 +1148,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Previous = m_Player.FindAction("Previous", throwIfNotFound: true);
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+        m_Player_Happy = m_Player.FindAction("Happy", throwIfNotFound: true);
+        m_Player_Angry = m_Player.FindAction("Angry", throwIfNotFound: true);
+        m_Player_Shocked = m_Player.FindAction("Shocked", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1176,6 +1239,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Previous;
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
+    private readonly InputAction m_Player_Happy;
+    private readonly InputAction m_Player_Angry;
+    private readonly InputAction m_Player_Shocked;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -1189,6 +1255,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Previous => m_Wrapper.m_Player_Previous;
         public InputAction @Next => m_Wrapper.m_Player_Next;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+        public InputAction @Happy => m_Wrapper.m_Player_Happy;
+        public InputAction @Angry => m_Wrapper.m_Player_Angry;
+        public InputAction @Shocked => m_Wrapper.m_Player_Shocked;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1225,6 +1294,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @Happy.started += instance.OnHappy;
+            @Happy.performed += instance.OnHappy;
+            @Happy.canceled += instance.OnHappy;
+            @Angry.started += instance.OnAngry;
+            @Angry.performed += instance.OnAngry;
+            @Angry.canceled += instance.OnAngry;
+            @Shocked.started += instance.OnShocked;
+            @Shocked.performed += instance.OnShocked;
+            @Shocked.canceled += instance.OnShocked;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1256,6 +1334,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @Happy.started -= instance.OnHappy;
+            @Happy.performed -= instance.OnHappy;
+            @Happy.canceled -= instance.OnHappy;
+            @Angry.started -= instance.OnAngry;
+            @Angry.performed -= instance.OnAngry;
+            @Angry.canceled -= instance.OnAngry;
+            @Shocked.started -= instance.OnShocked;
+            @Shocked.performed -= instance.OnShocked;
+            @Shocked.canceled -= instance.OnShocked;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1447,6 +1534,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnPrevious(InputAction.CallbackContext context);
         void OnNext(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnHappy(InputAction.CallbackContext context);
+        void OnAngry(InputAction.CallbackContext context);
+        void OnShocked(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

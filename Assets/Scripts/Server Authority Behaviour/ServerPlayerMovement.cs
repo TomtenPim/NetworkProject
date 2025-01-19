@@ -7,7 +7,8 @@ public class ServerPlayerMovement : NetworkBehaviour
     [SerializeField] private float m_playerSpeed;
     [SerializeField] private Transform m_playerTransform;
 
-    public CharacterController m_characterController;
+    //public CharacterController m_characterController;
+    public Rigidbody2D m_playerRigidbody;
     private PlayerInput m_playerInput;
 
     private void Awake()
@@ -35,7 +36,8 @@ public class ServerPlayerMovement : NetworkBehaviour
     {
         Vector2 calcMove = input.x * m_playerTransform.right + input.y * m_playerTransform.up;
 
-        m_characterController.Move(calcMove * m_playerSpeed* Time.deltaTime);
+       // m_characterController.Move(calcMove * m_playerSpeed* Time.deltaTime);
+       m_playerRigidbody.linearVelocity = calcMove*m_playerSpeed ;
     }
 
     [Rpc(SendTo.Server)]
